@@ -7,13 +7,26 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
+
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+
 <body>
-  <header>
-    <div class="hero-text">
+  <div class="side-border left"></div>
+  <div class="side-border right"></div>
+
+  <header class="video-header">
+    <video autoplay muted loop playsinline class="bg-video">
+      <source src="media/hero_skasu.mp4" type="video/mp4" />
+      Seu navegador não suporta vídeo em HTML5.
+    </video>
+    <div class="hero-overlay">
       <img src="logo.png" alt="Logo da SKASU" />
       <p>Dropando reefs e grooves desde 2002.</p>
     </div>
   </header>
+
+
 
   <section class="bio">
     <h2>Sobre a Banda</h2>
@@ -25,15 +38,52 @@
 
   <section class="music">
     <h2>Música</h2>
-    <iframe style="border-radius:12px" src="https://open.spotify.com/embed/artist/0uK9ZPfCQKmnHxIsQcM7yo?utm_source=generator&theme=0" width="100%" height="352" frameborder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    <iframe style="border-radius:12px" src="https://open.spotify.com/embed/artist/0uK9ZPfCQKmnHxIsQcM7yo?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
   </section>
 
-  <section class="events">
-    <h2>Próximos Shows</h2>
-    <ul>
-      <li>25/06 - Sesc Santos - 20:00h </li>
-    </ul>
-  </section>
+
+<section id="events" class="events">
+  <h2>Próximos Shows</h2>
+  <div id="eventos-container">
+    <p>Carregando agenda...</p>
+  </div>
+</section>
+
+<script>
+  // Animação ao rolar
+  const sectionObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  });
+
+  document.querySelectorAll('section').forEach(sec => sectionObserver.observe(sec));
+
+  // Carregar eventos do Google Sheets
+  const sheetURL = 'https://opensheet.elk.sh/1anLQvtf-SP5khkitbvOxVtMnEFjXdpiy311lbGiMx-M/Shows';
+  
+  fetch(sheetURL)
+    .then(res => res.json())
+    .then(data => {
+  const container = document.getElementById('eventos-container');
+  if (!data.length) return container.innerHTML = '<p>Sem eventos futuros.</p>';
+
+  container.innerHTML = data.map(show => `
+    <div class="show-card">
+      <div class="show-date">${show.Data}</div>
+      <div class="show-location">
+        <strong>${show.Local}</strong><br/>
+        <span class="city">${show.Cidade}</span>
+      </div>
+    </div>
+  `).join('');
+})
+
+    .catch(() => {
+      document.getElementById('eventos-container').innerHTML = '<p>Erro ao carregar eventos.</p>';
+    });
+</script>
+
 
   <section class="gallery">
     <h2>Galeria</h2>
@@ -92,7 +142,7 @@
         <li>Pirâmide Pôr do Sol</li>
         <li>Vida em Paz</li>
         <li>Roseira</li>
-        <li>Soul do Fink</li>
+        <li>Soul do Funk</li>
         <li>Sentimentos</li>
         <li>Lado Esquerdo</li>
         <li>Não Me Digas Nada</li>
@@ -136,8 +186,8 @@
     <p>Email: contato@skasu.com.br</p>
     <p>Telefone: (13) 998615-4583</p>
     <p>Siga nas redes sociais: 
-      <a href="https://www.instagram.com/skasuoficial/">Instagram</a>, 
-      <a href="https://www.youtube.com/@BANDASKASU">YouTube</a>
+      <a href="https://www.instagram.com/skasuoficial/" target="_blank" >Instagram</a>, 
+      <a href="https://www.youtube.com/@BANDASKASU" target="_blank" >YouTube</a>
     </p>
   </section>
 
@@ -161,17 +211,17 @@
 
     const sections = document.querySelectorAll("section");
 
-    const observer = new IntersectionObserver(entries => {
+    const animatedSectionObserver = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add("visible");
-          observer.unobserve(entry.target);
+          animatedSectionObserver.unobserve(entry.target);
         }
       });
     }, { threshold: 0.1 });
 
     sections.forEach(section => {
-      observer.observe(section);
+      animatedSectionObserver.observe(section);
     });
   </script>
 </body>
